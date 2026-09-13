@@ -8,8 +8,7 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="_ds/modernist-3cc0dbc7-4b5b-4ded-a0ef-437baab8f370/styles.css">
-<script src="_ds/modernist-3cc0dbc7-4b5b-4ded-a0ef-437baab8f370/_ds_bundle.js"></script>
+<link rel="stylesheet" href="styles.css">
 <script src="./image-slot.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -836,7 +835,7 @@ class Component extends DCLogic {
 
   async importBundled(existing, force) {
     if (!(await this.waitPdfLib())) { this.setState({ bundleStatus: 'PDF 解析元件載入失敗。' }); return; }
-    const base = st => 'pdf/114110_' + st + '.pdf';
+    const base = st => '114110_' + st + '.pdf';
     let all = (existing || this.state.imported).slice();
     if (force) all = all.filter(q => q.year !== 114);
     const report = [];
