@@ -31,6 +31,19 @@
   --color-accent-800: #7c1405;
   --color-accent-900: #4d170e;
 
+  /* Semantic colours make each part of the study flow recognisable before
+     users read the label.  Keep the existing red as the primary action. */
+  --color-study: #1769aa;
+  --color-study-soft: #e7f2fb;
+  --color-review: #a43b16;
+  --color-review-soft: #fff0e9;
+  --color-library: #6642a1;
+  --color-library-soft: #f1ebfb;
+  --color-progress: #16775b;
+  --color-progress-soft: #e5f6ee;
+  --color-time: #9a6510;
+  --color-time-soft: #fff4d6;
+
   --color-accent-2-100: #fff2ef;
   --color-accent-2-200: #ffe0da;
   --color-accent-2-300: #ffc4b9;
@@ -248,4 +261,3 @@ textarea.input { min-height: 90px; resize: vertical; }
 }
 .dialog-body { font-size: 14px; opacity: 0.85; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-2); }
-

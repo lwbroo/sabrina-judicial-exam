@@ -51,7 +51,7 @@
     </div>
     <nav style="display: flex; align-items: stretch; flex-wrap: wrap;">
       <sc-for list="{{ navItems }}" as="nav" hint-placeholder-count="3">
-        <button type="button" onClick="{{ nav.go }}" style="{{ nav.style }}" style-hover="background: var(--color-accent-100);">{{ nav.label }}</button>
+        <button type="button" onClick="{{ nav.go }}" style="{{ nav.style }}" style-hover="{{ nav.hover }}">{{ nav.label }}</button>
       </sc-for>
     </nav>
   </header>
@@ -83,7 +83,7 @@
           <p style="margin: 0 0 14px; font-size: 13px; color: var(--color-neutral-700);">{{ paperListNote }}</p>
           <div style="display: grid; gap: 2px; background: var(--color-text); border: 2px solid var(--color-text);">
             <sc-for list="{{ paperRows }}" as="p" hint-placeholder-count="4">
-              <button type="button" onClick="{{ p.select }}" style="{{ p.style }}" style-hover="background: var(--color-accent-100);">
+              <button type="button" onClick="{{ p.select }}" style="{{ p.style }}" style-hover="{{ p.hover }}">
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                   <span style="{{ p.chip }}">{{ p.code }}</span>
                   <span style="font-size: 17px; font-weight: 800;">{{ p.name }}</span>
@@ -96,7 +96,7 @@
         </div>
 
         <div style="border: 2px solid var(--color-text); background: var(--color-neutral-100);">
-          <div style="padding: 14px 18px; border-bottom: 2px solid var(--color-text);">
+          <div style="padding: 14px 18px; border-bottom: 2px solid var(--color-text); {{ selectedPaperStyle }}">
             <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-neutral-600);">已選考卷</div>
             <div style="font-size: 15px; font-weight: 800; margin-top: 4px; line-height: 1.35;">{{ selectedPaperName }}</div>
           </div>
@@ -105,7 +105,7 @@
               <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-neutral-600); margin-bottom: 8px;">練習模式</div>
               <div style="display: grid; gap: 6px;">
                 <sc-for list="{{ modeRows }}" as="m" hint-placeholder-count="4">
-                  <button type="button" onClick="{{ m.pick }}" style="{{ m.style }}" style-hover="background: var(--color-accent-100);">
+                  <button type="button" onClick="{{ m.pick }}" style="{{ m.style }}" style-hover="{{ m.hover }}">
                     <div style="font-size: 14px; font-weight: 700;">{{ m.label }}</div>
                     <div style="font-size: 11px; color: var(--color-neutral-700); margin-top: 3px; line-height: 1.5;">{{ m.note }}</div>
                   </button>
@@ -549,16 +549,16 @@ const SAMPLE = [
 const TEMPLATE_JSON = '[\n  {\n    "year": 114,\n    "paper": "0101",\n    "subject": "憲法",\n    "no": 1,\n    "stem": "題幹文字…",\n    "options": ["選項一", "選項二", "選項三", "選項四"],\n    "answer": 0,\n    "explain": "老師解析…"\n  }\n]';
 
 const CELL_SKINS = [
-  { bg: 'var(--color-accent)', fg: '#fff' },
-  { bg: 'var(--color-accent-200)', fg: 'var(--color-accent-900)' },
-  { bg: 'var(--color-neutral-900)', fg: '#fff' },
-  { bg: 'var(--color-neutral-200)', fg: 'var(--color-text)' }
+  { bg: 'var(--color-progress)', fg: '#fff' },
+  { bg: 'var(--color-study-soft)', fg: 'var(--color-study)' },
+  { bg: 'var(--color-library)', fg: '#fff' },
+  { bg: 'var(--color-review-soft)', fg: 'var(--color-review)' }
 ];
 const PAPER_SKINS = {
-  '0101': { bg: 'var(--color-accent)', fg: '#fff' },
-  '0301': { bg: 'var(--color-accent-2-700)', fg: '#fff' },
-  '0201': { bg: 'var(--color-neutral-900)', fg: '#fff' },
-  '0202': { bg: 'var(--color-accent-300)', fg: 'var(--color-accent-900)' }
+  '0101': { bg: 'var(--color-study)', soft: 'var(--color-study-soft)', fg: '#fff' },
+  '0301': { bg: 'var(--color-review)', soft: 'var(--color-review-soft)', fg: '#fff' },
+  '0201': { bg: 'var(--color-library)', soft: 'var(--color-library-soft)', fg: '#fff' },
+  '0202': { bg: 'var(--color-time)', soft: 'var(--color-time-soft)', fg: '#fff' }
 };
 
 const HEADER_ANY = /(代號\s*[：:]|頁次\s*[：:]|座號\s*[：:]|全[一二三四五六七八九十]+頁|禁止.{0,6}攜出)/;
@@ -1025,11 +1025,15 @@ class Component extends DCLogic {
         this.setState({ profiles: list, profile: name, screen: 'home', session: null }, () => this.loadProfileData(name));
       },
       navItems: [
-        { k: 'home', label: '練習' }, { k: 'wrong', label: '錯題本' }, { k: 'bank', label: '題庫' }
+        { k: 'home', label: '練習', color: 'var(--color-study)', soft: 'var(--color-study-soft)' },
+        { k: 'wrong', label: '錯題本', color: 'var(--color-review)', soft: 'var(--color-review-soft)' },
+        { k: 'bank', label: '題庫', color: 'var(--color-library)', soft: 'var(--color-library-soft)' }
       ].map(n => ({
         label: n.label, go: () => this.setState({ screen: n.k }),
+        hover: 'background: ' + n.soft + '; color: ' + n.color + ';',
         style: 'border: 0; border-left: 1px solid var(--color-neutral-700); padding: 0 22px; font-size: 13px; font-weight: 700; background: ' +
-          (st.screen === n.k ? 'var(--color-accent)' : 'transparent') + '; color: #fff;'
+          (st.screen === n.k ? n.color : 'transparent') + '; color: #fff; box-shadow: ' +
+          (st.screen === n.k ? 'inset 0 -4px 0 ' + n.soft : 'none') + ';'
       })),
       goHome: () => this.setState({ screen: 'home' }),
       goWrong: () => this.setState({ screen: 'wrong' })
@@ -1048,28 +1052,31 @@ class Component extends DCLogic {
     v.streakDots = [];
     for (let i = 29; i >= 0; i--) {
       const d = dayOffset(i), on = (st.stats.days || []).indexOf(d) >= 0;
-      v.streakDots.push({ title: d, style: 'display: inline-block; width: 14px; height: 14px; border: 1px solid var(--color-neutral-400); background: ' + (on ? 'var(--color-accent)' : 'transparent') + ';' });
+      v.streakDots.push({ title: d, style: 'display: inline-block; width: 14px; height: 14px; border: 1px solid var(--color-neutral-400); background: ' + (on ? 'var(--color-progress)' : 'transparent') + ';' });
     }
     const bank = this.bank();
     v.paperRows = PAPERS.map(p => ({
       code: p.code, name: p.name, sub: p.sub,
       chip: 'display: inline-flex; align-items: center; padding: 3px 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; background: ' + PAPER_SKINS[p.key].bg + '; color: ' + PAPER_SKINS[p.key].fg + ';',
+      hover: 'background: ' + PAPER_SKINS[p.key].soft + ';',
       meta: '題庫 ' + bank.filter(q => q.paper === p.key).length + ' 題　考試 ' + this.spec(p.key).minutes + ' 分鐘 ' + this.spec(p.key).count + ' 題',
       select: () => this.setState({ paper: p.key, subject: null }),
-      style: 'border: 0; padding: 16px 18px; text-align: left; background: ' + (st.paper === p.key ? 'var(--color-accent-100)' : 'var(--color-bg)') +
-        '; box-shadow: ' + (st.paper === p.key ? 'inset 6px 0 0 var(--color-accent)' : 'none') + ';'
+      style: 'border: 0; padding: 16px 18px; text-align: left; background: ' + (st.paper === p.key ? PAPER_SKINS[p.key].soft : 'var(--color-bg)') +
+        '; box-shadow: ' + (st.paper === p.key ? 'inset 6px 0 0 ' + PAPER_SKINS[p.key].bg : 'none') + ';'
     }));
     v.paperListNote = '第一試共四份考卷，題數與時間依考選部試題檔載明的規格。';
     v.selectedPaperName = this.paperName(st.paper);
+    v.selectedPaperStyle = 'background: ' + PAPER_SKINS[st.paper].soft + '; box-shadow: inset 6px 0 0 ' + PAPER_SKINS[st.paper].bg + ';';
     const modes = [
-      { k: 'exam', label: '整份模擬考', note: '完整 ' + this.spec(st.paper).count + ' 題、倒數 ' + this.spec(st.paper).minutes + ' 分鐘，依實際考試規格' },
-      { k: 'quick', label: '隨機抽題快練', note: '自訂題數，按每題 ' + this.perQ(st.paper) + ' 秒配時' },
-      { k: 'subject', label: '單一法科練習', note: '只出這份考卷中某一科的題目' },
-      { k: 'wrongDrill', label: '錯題重考', note: '只出我做錯且未歸檔的題目' }
+      { k: 'exam', label: '整份模擬考', note: '完整 ' + this.spec(st.paper).count + ' 題、倒數 ' + this.spec(st.paper).minutes + ' 分鐘，依實際考試規格', color: 'var(--color-study)', soft: 'var(--color-study-soft)' },
+      { k: 'quick', label: '隨機抽題快練', note: '自訂題數，按每題 ' + this.perQ(st.paper) + ' 秒配時', color: 'var(--color-time)', soft: 'var(--color-time-soft)' },
+      { k: 'subject', label: '單一法科練習', note: '只出這份考卷中某一科的題目', color: 'var(--color-library)', soft: 'var(--color-library-soft)' },
+      { k: 'wrongDrill', label: '錯題重考', note: '只出我做錯且未歸檔的題目', color: 'var(--color-review)', soft: 'var(--color-review-soft)' }
     ];
     v.modeRows = modes.map(m => ({
       label: m.label, note: m.note, pick: () => this.setState({ mode: m.k }),
-      style: 'border: 2px solid ' + (st.mode === m.k ? 'var(--color-accent)' : 'var(--color-text)') + '; padding: 10px 12px; text-align: left; background: ' + (st.mode === m.k ? 'var(--color-accent-100)' : 'var(--color-bg)') + ';'
+      hover: 'background: ' + m.soft + ';',
+      style: 'border: 2px solid ' + (st.mode === m.k ? m.color : 'var(--color-text)') + '; padding: 10px 12px; text-align: left; background: ' + (st.mode === m.k ? m.soft : 'var(--color-bg)') + '; box-shadow: ' + (st.mode === m.k ? 'inset 5px 0 0 ' + m.color : 'none') + ';'
     }));
     v.showSubjectPicker = st.mode === 'subject';
     const subjects = [];
